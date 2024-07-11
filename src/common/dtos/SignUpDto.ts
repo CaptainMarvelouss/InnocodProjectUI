@@ -4,4 +4,5 @@ export interface SignUpDto {
     email: string,
     avatar: string,
     displayName: string
+    confirmPassword: string
   }
