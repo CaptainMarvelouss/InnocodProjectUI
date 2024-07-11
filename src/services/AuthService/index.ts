@@ -6,8 +6,6 @@ import {
 import { User } from "../../interfaces";
 
 
-
-
 export const AuthService = {
   isLogin: (): boolean => {
     return localStorage.getItem("user") ? true : false;
