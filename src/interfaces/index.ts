@@ -14,7 +14,7 @@ interface CitationMetadata {
     citationMetadata: CitationMetadata;
   }
   
-  interface DataStructure {
+  export interface DataStructure {
     candidates: Candidate[];
     messages: Message[];
     filters: any[]; // Assuming filters can be of any type, adjust as per actual usage

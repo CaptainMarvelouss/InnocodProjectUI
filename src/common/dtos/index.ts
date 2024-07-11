@@ -1,3 +1,7 @@
 export * from './ChatGPTDto'
 export * from './SignInDto'
 export * from './SignUpDto'
+export * from './CreateNewPostDto'
+export * from './UpdatePostStateDto'
+export * from './UpdatePostDto'
+export * from './SearchPostDto'
