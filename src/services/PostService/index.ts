@@ -30,6 +30,12 @@ export const PostService = {
     return list;
   },
 
+  getPostById: async (id: string) : Promise<Post> => {
+    const response = await axios.get(`https://localhost:7139/Post/GetSinglePostById?postId=`+id);
+    const post: Post = response.data;
+    return post;
+  },
+
   deletePost: async (id: string) => {
     await axios.delete(`https://localhost:7139/Post/DeletePost?postId=`+id);
   },
