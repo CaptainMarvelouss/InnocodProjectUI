@@ -1,30 +1,41 @@
 import { useEffect, useState } from "react"
 import "./index.css"
 import { PostService } from "../../../services/PostService";
-import { Post } from "../../../interfaces";
+import { Comment, CommentReply, Post } from "../../../interfaces";
 import { useSearchParams } from "react-router-dom";
+import { CommentService } from "../../../services/CommentService";
+import { ReplyCommentService } from "../../../services/ReplyCommentService";
 export function Blog() {
     const [post, setPost] = useState<Post>();
+    const [listComment, setListComment] = useState<Comment[]>();
+
     const [searchParams] = useSearchParams();
-    const id = searchParams.get("id"); 
+    const id = searchParams.get("id");
     useEffect(() => {
-        const handleGetBlogById = async () => {
+        const fetchData = async () => {
             try {
-                if (id != null) {
-                    const data = await PostService.getPostById(id);
-                    setPost(data);
-            console.log(data)
+                if (id) {
+                    const postData = await PostService.getPostById(id);
+                    setPost(postData);
 
+                    const commentsData = await CommentService.getAllCommentByPostId(id);
+                    setListComment(commentsData);
+
+                    const updatedComments = await Promise.all(commentsData.map(async (comment) => {
+                        const replies = await ReplyCommentService.getAllReplyComment(comment.id.toString());
+                        return { ...comment, commentReply: replies };
+                    }));
+
+                    setListComment(updatedComments);
                 }
-
             } catch (error) {
-                console.error("Error fetching learning module:", error);
-
+                console.error('Error fetching data:', error);
             }
         };
-        handleGetBlogById(); 
-    }, []); 
 
+        fetchData();
+    }, [id]);
+    
     return (
         <body data-spy="scroll" data-target=".navbar" data-offset="40" id="home">
 
@@ -103,43 +114,32 @@ export function Blog() {
                             </div>
 
                             <div className="card-footer">
-                                <h6 className="mt-5 mb-3 text-center"><a href="#" className="text-dark">Comments 4</a></h6>
+                                <h6 className="mt-5 mb-3 text-center"><a href="#" className="text-dark">Comments</a></h6>
                                 <hr />
-                                <div className="media">
-                                    <img src="src/assets/imgs/avatar-1.jpg" className="mr-3 thumb-sm rounded-circle" alt="..." />
-                                    <div className="media-body">
-                                        <h6 className="mt-0">Janice Wilder</h6>
-                                        <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.</p>
-                                        <a href="#" className="text-dark small font-weight-bold"><i className="ti-back-right"></i> Replay</a>
-                                        <div className="media mt-5">
-                                            <a className="mr-3" href="#">
-                                                <img src="src/assets/imgs/avatar.jpg" className="thumb-sm rounded-circle" alt="..." />
-                                            </a>
-                                            <div className="media-body align-items-center">
-                                                <h6 className="mt-0">Joe Mitchell</h6>
-                                                <p>Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus</p>
-                                                <a href="#" className="text-dark small font-weight-bold"><i className="ti-back-right"></i> Replay</a>
+                                {listComment?.map(comment => (
+                                    <div className="media mt-5">
+                                        <img src={comment.user.avatar} className="mr-3 thumb-sm rounded-circle" alt="..." />
+                                        <div className="media-body">
+                                            <h6 className="mt-0">{comment.user.displayName}</h6>
+                                            <p>{comment.content}</p>
+                                            <a href="#" className="text-dark small font-weight-bold"><i className="ti-back-right"></i> Replay</a>
+                                            {comment.commentReply?.map(reply => (
+                                            <div className="media mt-5">
+                                                <a className="mr-3" href="#">
+                                                    <img src={reply.user.avatar} className="thumb-sm rounded-circle" alt="..." />
+                                                </a>
+                                                <div className="media-body align-items-center">
+                                                    <h6 className="mt-0">{reply.user.displayName}</h6>
+                                                    <p>{reply.content}</p>
+                                                    <a href="#" className="text-dark small font-weight-bold"><i className="ti-back-right"></i> Replay</a>
 
+                                                </div>
+                                                
                                             </div>
+                                             ))}
                                         </div>
                                     </div>
-                                </div>
-                                <div className="media mt-5">
-                                    <img src="src/assets/imgs/avatar-2.jpg" className="mr-3 thumb-sm rounded-circle" alt="..." />
-                                    <div className="media-body">
-                                        <h6 className="mt-0">Crosby Meadows</h6>
-                                        <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.</p>
-                                        <a href="#" className="text-dark small font-weight-bold"><i className="ti-back-right"></i> Replay</a>
-                                    </div>
-                                </div>
-                                <div className="media mt-4">
-                                    <img src="src/assets/imgs/avatar-3.jpg" className="mr-3 thumb-sm rounded-circle" alt="..." />
-                                    <div className="media-body">
-                                        <h6 className="mt-0">Jean Wiley</h6>
-                                        <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin.</p>
-                                        <a href="#" className="text-dark small font-weight-bold"><i className="ti-back-right"></i> Replay</a>
-                                    </div>
-                                </div>
+                                ))}
 
                                 <h6 className="mt-5 mb-3 text-center"><a href="#" className="text-dark">Write Your Comment</a></h6>
                                 <hr />
@@ -148,15 +148,7 @@ export function Blog() {
                                         <div className="col-12 form-group">
                                             <textarea name="" id="" cols={30} rows={10} className="form-control" placeholder="Enter Your Comment Here"></textarea>
                                         </div>
-                                        <div className="col-sm-4 form-group">
-                                            <input type="text" className="form-control" value="Name" />
-                                        </div>
-                                        <div className="col-sm-4 form-group">
-                                            <input type="email" className="form-control" placeholder="Email" />
-                                        </div>
-                                        <div className="col-sm-4 form-group">
-                                            <input type="url" className="form-control" placeholder="Website" />
-                                        </div>
+                                        
                                         <div className="form-group col-12">
                                             <button className="btn btn-primary btn-block">Post Comment</button>
                                         </div>
