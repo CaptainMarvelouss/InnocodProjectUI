@@ -1,5 +1,6 @@
 import axios from "axios";
 import { ChatGPTDto } from "../../common";
+import { DataStructure } from "../../interfaces";
 
 export const ChatGPTService = {
  
