@@ -1,4 +1,4 @@
-import { Category } from "../common/enum/Catelogy";
+import { Category } from "../common/enum/Category";
 import { State } from "../common/enum/State";
 import { User } from "../interfaces/User";
 import { React } from "../interfaces/React";
