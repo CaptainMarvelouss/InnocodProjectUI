@@ -23,7 +23,7 @@ export const ReplyCommentService = {
   },
 
   deleteReplyComment: async (commentId: string) : Promise<string> => {
-    const response = await axios.delete(`https://localhost:7139/ReplyComment/DeleteReplyComment`+commentId);
+    const response = await axios.delete(`https://localhost:7139/ReplyComment/DeleteReplyComment?commentId=`+commentId);
     const reponseMessage : string = response.data;
     return reponseMessage;
   },
