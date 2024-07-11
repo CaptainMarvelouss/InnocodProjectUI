@@ -3,5 +3,6 @@ export enum Category {
     Environment,
     DigitalTransformation,
     ElectricVehicle,
+    AI,
     All
 }
