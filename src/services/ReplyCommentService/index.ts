@@ -1,5 +1,6 @@
 import axios from "axios";
 import { ReplyCommentDto, UpdateReplyComment } from "../../common";
+import { CommentReply } from "../../interfaces";
 
 
 export const ReplyCommentService = {
@@ -28,4 +29,9 @@ export const ReplyCommentService = {
     return reponseMessage;
   },
   
+  getAllReplyComment: async (commentId: string) : Promise<CommentReply[]> => {
+    const response = await axios.get(`https://localhost:7139/ReplyComment/GetAllReplyCommentByCmtId?id=`+commentId);
+    const list : CommentReply[] = response.data;
+    return list
+  }
 };

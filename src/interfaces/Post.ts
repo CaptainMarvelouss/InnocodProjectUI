@@ -14,5 +14,5 @@ export interface Post {
     image?: string; // Optional field
     reacts: React[];
     state: State;
-    date: Date;
+    date: string;
   }

@@ -3,7 +3,7 @@ import { Post } from "./Post";
 import { React } from "../interfaces/React";
 import { CommentReply } from "./CommentReply";
 
-interface Comment {
+export interface Comment {
     id: number;
     content: string;
     reacts: React[];

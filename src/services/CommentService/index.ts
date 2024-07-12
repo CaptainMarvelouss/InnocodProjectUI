@@ -1,6 +1,7 @@
 import axios from "axios";
 import { CommentDto } from "../../common/dtos/Comment/CommentDto";
 import { UpdateCommentDto } from "../../common/dtos/Comment/UpdateCommentDto";
+import { Comment } from "../../interfaces";
 
 export const CommentService = {
     createComment: async (dto: CommentDto): Promise<Comment> => {
@@ -26,5 +27,11 @@ export const CommentService = {
         const comment: Comment = response.data;
         return comment;
     },
+
+    getAllCommentByPostId: async (id: string) : Promise<Comment[]> => {
+        const response = await axios.get(`https://localhost:7139/Comment/GetAllCommentByPostId?postId=`+id)
+        const list: Comment[] = response.data;
+        return list;
+    }
 
 };
